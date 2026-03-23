@@ -30,7 +30,6 @@ share/python-wheels/
 MANIFEST
 venv/
 env/
-lib_back/
 
 #IDE/Editor Settings
 .vscode/
