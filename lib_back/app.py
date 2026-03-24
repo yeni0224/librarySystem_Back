@@ -31,6 +31,14 @@ def get_db():
 def get_books(db:Session=Depends(get_db)):
     return db.query(models.Library).all()
 
+#책 상세 내용 조회
+@app.get("/books/{isbn}", response_model=LibOut)
+def get_book(isbn:int, db:Session=Depends(get_db)):
+    book = db.query(models.Library).get(isbn)
+    if not book:
+        raise HTTPException(404, "Not Found")
+    return book
+
 #책 추가
 @app.post("/books/create", response_model=LibOut)
 def create_book(book : LibCreate, db:Session = Depends(get_db)):
@@ -52,4 +60,12 @@ def update_book(isbn:int, data:LibUpdate, db:Session = Depends(get_db)):
     db.commit()
     return book
 
-#
+#책 삭제
+@app.post("/books/delete/{isbn}")
+def delete_book(isbn: int, db:Session=Depends(get_db)):
+    book = db.query(models.Library).get(isbn)
+    if not book:
+        raise HTTPException(404)
+    db.delete(book)
+    db.commit()
+    return {"message":"deleted"}
